@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <Windows.h>
 
 using namespace std;
 
@@ -42,7 +43,7 @@ void wInput(string inf, float& n) {
 // Трубы
 pipe addpipe(int maxid) {
 	pipe p;
-	p.id = maxid;
+	p.id = ++maxid;
 	wInput("длину",p.lenght);
 	wInput("диаметр",p.diameter);
 	p.repair = false;
@@ -71,11 +72,13 @@ KS addKS(int maxid) {
 	k.id = maxid;
 	cout << "Пожалуйста, введите имя" << endl;
 	cin >> k.name;
+	wInput("количество цехов", k.amountShops);
 	do {
-		wInput("количество цехов", k.amountShops);
 		wInput("количество активных цехов", k.activeShops);
-		k.efficiency = (static_cast<float>(k.activeShops) / static_cast<float>(k.amountShops)) * 100;
 	} while (k.amountShops < k.activeShops || k.activeShops < 0);
+	do {
+		wInput("эффективность", k.efficiency);
+	} while (k.efficiency > 100);
 	return(k);
 }
 
@@ -87,55 +90,66 @@ void outKS(const KS& k) {
 	cout << "эффективность компрессорной станции: " << k.efficiency << "%" << endl;
 }
 
-void editKS(KS& k, int changeNumber) {
-	if (((k.activeShops + changeNumber) > 0) && ((k.activeShops + changeNumber) < k.amountShops)) {
-		k.activeShops += changeNumber;
-		k.efficiency = (static_cast<float>(k.activeShops) / static_cast<float>(k.amountShops)) * 100;
-		cout << "Новая эффективность: " << k.efficiency << "%" << endl;
-	}
-	else {
-		cout << "Превышен предел изменения активных цехов. Изменения не внесены." << endl;
-	}
+void editKS(KS& k) {
+	int shopChange;
+	int newEfficiency;
+	do {	//изменение активных цехов
+		cout << "Введите количество включаемых цехов (отрицательное значение - количество выключаемых цехов)" << endl;
+		cin >> shopChange;
+	} while (((k.activeShops + shopChange) < 0) || ((k.activeShops + shopChange) > k.amountShops));
+	k.activeShops = k.activeShops + shopChange;
+	do {	//изменение эффективности
+		cout << "Введите новую эффективность" << endl;
+		cin >> newEfficiency;
+	} while ((newEfficiency < 0) || (newEfficiency > 100));
+	k.efficiency = newEfficiency;
 }
 
 void save(pipe p, KS k) 
 {
 	ofstream fout;
 	fout.open("results.txt", ios::out);
-	fout << p.id << endl;
-	fout << p.lenght << endl;
-	fout << p.diameter << endl;
-	fout << p.repair << endl;
+	if (fout.is_open()) {
+		fout << p.id << endl;
+		fout << p.lenght << endl;
+		fout << p.diameter << endl;
+		fout << p.repair << endl;
 
-	fout << k.id << endl;
-	fout << k.name << endl;
-	fout << k.amountShops << endl;
-	fout << k.activeShops << endl;
-	fout << k.efficiency;
-	fout.close();
+		fout << k.id << endl;
+		fout << k.name << endl;
+		fout << k.amountShops << endl;
+		fout << k.activeShops << endl;
+		fout << k.efficiency;
+		fout.close();
+	}
 }
 
 void load(pipe& p, KS& k) 
 {
 	ifstream fin;
 	fin.open("results.txt", ios::in);
-	fin >> p.id;
-	fin >> p.lenght;
-	fin >> p.diameter;
-	fin >> p.repair;
-	fin >> k.id;
-	fin >> k.name;
-	fin >> k.amountShops;
-	fin >> k.activeShops;
-	fin >> k.efficiency;
+	if (fin.is_open()) {
+		fin >> p.id;
+		fin >> p.lenght;
+		fin >> p.diameter;
+		fin >> p.repair;
+		fin >> k.id;
+		fin >> k.name;
+		fin >> k.amountShops;
+		fin >> k.activeShops;
+		fin >> k.efficiency;
+		fin.close();
+	}
 }
 
 int main() {
-	setlocale(LC_ALL, "ru");
-	int chs;
-	int shopChange;
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251); //https://nicknixer.ru/programmirovanie/russkie-simvolybukvy-pri-vvodevyvode-v-konsol-na-c/
+	int choise;
 	pipe p;
 	KS k;
+	int maxid = 0;
+
 	while (true) {
 		cout << endl;
 		cout << "Трубно-компрессорно-станционный интерфейс" << endl;
@@ -145,16 +159,28 @@ int main() {
 		cout << "3 - Изменить статус трубы" << endl;
 		cout << "4 - Добавить новую компрессорную станцию" << endl;
 		cout << "5 - Вывести информацию о компрессорной станции" << endl;
-		cout << "6 - Остановка/Запуск цехов компрессорной станции" << endl;
+		cout << "6 - Изменение информации о компрессорной станции" << endl;
 		cout << "7 - Вывод всех элементов" << endl;
 		cout << "8 - Сохранить данные в results.txt" << endl;
 		cout << "9 - Загрузить данные из results.txt" << endl;
 		cout << "0 - Выход" << endl;
-	cin >> chs;
-		switch (chs)
+
+		cout << "Выберите действие:" << endl;
+		cin >> choise;
+
+		while (cin.fail()) {
+			cin.clear();
+			cin.ignore(10000, '\n');
+			cout << "Выберите действие:" << endl;
+			cin >> choise;
+		}
+		
+	if (choise == 1 || choise == 2 || choise == 3 || choise == 4 || choise == 5 || choise == 6 || choise == 7 || choise == 8 || choise == 9 || choise == 0) {
+		switch (choise)
 		{
 		case 1:
-			p = addpipe(1);
+			p = addpipe(maxid);
+			maxid++;
 			break;
 		case 2:
 			outpipe(p);
@@ -169,9 +195,7 @@ int main() {
 			outKS(k);
 			break;
 		case 6:
-			cout << "Количество включаемых цехов (отрицательное значение - количество выключаемых цехов)" << endl;
-			cin >> shopChange;
-			editKS(k, shopChange);
+			editKS(k);
 			break;
 		case 7:
 			cout << "Труба:" << endl << endl;
@@ -180,7 +204,10 @@ int main() {
 			outKS(k);
 			break;
 		case 8:
-			save(p,k);
+			if (maxid != 0) {//проверка наличия трубы (done)
+				save(p, k);
+			}
+			else { cout << "Нет данных для сохранения" << endl; }
 			break;
 		case 9:
 			load(p, k);
@@ -192,5 +219,7 @@ int main() {
 			return 0;
 			break;
 		}
+	}
+	else { cout << "Введенно некорректное значение"; }
 	}
 }
