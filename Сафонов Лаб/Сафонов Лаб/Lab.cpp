@@ -39,6 +39,16 @@ void wInput(string inf, float& n) {
 	} while (cin.fail());
 }
 
+//void wInput(string inf, string& n) {
+//	do {
+//		cin.clear();
+//		cin.ignore(10000, '\n');
+//		cout << "Пожалуйста, введите " << inf << endl;
+//		getline(cin, n);
+//	} while (cin.fail());
+//}
+
+
 
 // Трубы
 pipe addpipe(int maxid) {
@@ -71,7 +81,8 @@ KS addKS(int maxid) {
 	KS k;
 	k.id = maxid;
 	cout << "Пожалуйста, введите имя" << endl;
-	cin >> k.name;
+	cin.ignore();
+	getline(cin, k.name);
 	wInput("количество цехов", k.amountShops);
 	do {
 		wInput("количество активных цехов", k.activeShops);
