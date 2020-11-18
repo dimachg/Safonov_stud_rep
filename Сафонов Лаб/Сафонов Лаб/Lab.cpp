@@ -82,14 +82,14 @@ KS addKS(int maxid) {
 	k.id = maxid;
 	cout << "Пожалуйста, введите имя" << endl;
 	cin.ignore();
-	getline(cin, k.name);
+	getline(cin, k.name);	//поддержка пробелов (+)
 	wInput("количество цехов", k.amountShops);
 	do {
 		wInput("количество активных цехов", k.activeShops);
-	} while (k.amountShops < k.activeShops || k.activeShops < 0);
+	} while (k.amountShops < k.activeShops || k.activeShops < 0);	//проверка корректного ввода (+)
 	do {
 		wInput("эффективность", k.efficiency);
-	} while (k.efficiency > 100);
+	} while (k.efficiency > 100);	//эффективность по вводу (+)
 	return(k);
 }
 
@@ -139,7 +139,7 @@ void load(pipe& p, KS& k)
 {
 	ifstream fin;
 	fin.open("results.txt", ios::in);
-	if (fin.is_open()) {
+	if (fin.is_open()) {	//проверка факта открытия файла (+)
 		fin >> p.id;
 		fin >> p.lenght;
 		fin >> p.diameter;
@@ -185,8 +185,16 @@ int main() {
 			cout << "Выберите действие:" << endl;
 			cin >> choise;
 		}
-		
-	if (choise == 1 || choise == 2 || choise == 3 || choise == 4 || choise == 5 || choise == 6 || choise == 7 || choise == 8 || choise == 9 || choise == 0) {
+		/*int checkSwitch = 0;
+		int i = 0;
+		for (i = 0; i < 9; i++) {
+			if (choise == i) {
+				checkSwitch = 1;
+			}
+		}
+		*/
+		//проверка ввода только 1..0 (+)
+		if (choise == 1 || choise == 2 || choise == 3 || choise == 4 || choise == 5 || choise == 6 || choise == 7 || choise == 8 || choise == 9 || choise == 0) {
 		switch (choise)
 		{
 		case 1:
@@ -215,7 +223,7 @@ int main() {
 			outKS(k);
 			break;
 		case 8:
-			if (maxid != 0) {//проверка наличия трубы (done)
+			if (maxid != 0) {//проверка наличия трубы (+)
 				save(p, k);
 			}
 			else { cout << "Нет данных для сохранения" << endl; }
@@ -231,6 +239,6 @@ int main() {
 			break;
 		}
 	}
-	else { cout << "Введенно некорректное значение"; }
+	else { cout << "Введенно некорректное значение";  }
 	}
 }
