@@ -2,42 +2,13 @@
 #include <fstream>
 #include <string>
 #include <Windows.h>
+#include "Pipe.h"
+#include "KS.h"
+#include "utility.h"
 
 using namespace std;
 
-struct pipe {
-	int id;
-	float lenght;
-	int diameter;
-	bool repair;
-};
 
-struct KS {
-	int id;
-	string name;
-	int amountShops;
-	int activeShops;
-	float efficiency;
-};
-
-// Защита ввода
-void wInput(string inf, int& n) {
-	do {
-		cin.clear();
-		cin.ignore(10000, '\n');
-		cout << "Пожалуйста, введите "<< inf << endl;
-		cin >> n;
-	} while (cin.fail());
-}
-
-void wInput(string inf, float& n) {
-	do {
-		cin.clear();
-		cin.ignore(10000, '\n');
-		cout << "Пожалуйста, введите " << inf << endl;
-		cin >> n;
-	} while (cin.fail());
-}
 
 //void wInput(string inf, string& n) {
 //	do {
@@ -48,75 +19,7 @@ void wInput(string inf, float& n) {
 //	} while (cin.fail());
 //}
 
-
-
-// Трубы
-pipe addpipe(int maxid) {
-	pipe p;
-	p.id = ++maxid;
-	wInput("длину",p.lenght);
-	wInput("диаметр",p.diameter);
-	p.repair = false;
-	return p;
-}
-
-void outpipe(const pipe& p) {
-	cout << "id: " << p.id << endl;
-	cout << "Длина трубы: " << p.lenght << endl;
-	cout << "Диаметр трубы: " << p.diameter << endl;
-	if (p.repair == false) {
-		cout << "Труба работает" << endl;
-	}
-	else {
-		cout << "Труба в ремонте" << endl;
-	}
-}
-
-void editPipe(bool& b) {
-	b = !b;
-}
-
-// Компрессорные станции
-KS addKS(int maxid) {
-	KS k;
-	k.id = maxid;
-	cout << "Пожалуйста, введите имя" << endl;
-	cin.ignore();
-	getline(cin, k.name);	//поддержка пробелов (+)
-	wInput("количество цехов", k.amountShops);
-	do {
-		wInput("количество активных цехов", k.activeShops);
-	} while (k.amountShops < k.activeShops || k.activeShops < 0);	//проверка корректного ввода (+)
-	do {
-		wInput("эффективность", k.efficiency);
-	} while (k.efficiency > 100);	//эффективность по вводу (+)
-	return(k);
-}
-
-void outKS(const KS& k) {
-	cout << "id компрессорной станции: " << k.id << endl;
-	cout << "Имя компрессорной станции: " << k.name << endl;
-	cout << "Количество цехов компрессорной станции: " << k.amountShops << endl;
-	cout << "Количество активных цехов компрессорной станции: " << k.activeShops << endl;
-	cout << "эффективность компрессорной станции: " << k.efficiency << "%" << endl;
-}
-
-void editKS(KS& k) {
-	int shopChange;
-	int newEfficiency;
-	do {	//изменение активных цехов
-		cout << "Введите количество включаемых цехов (отрицательное значение - количество выключаемых цехов)" << endl;
-		cin >> shopChange;
-	} while (((k.activeShops + shopChange) < 0) || ((k.activeShops + shopChange) > k.amountShops));
-	k.activeShops = k.activeShops + shopChange;
-	do {	//изменение эффективности
-		cout << "Введите новую эффективность" << endl;
-		cin >> newEfficiency;
-	} while ((newEfficiency < 0) || (newEfficiency > 100));
-	k.efficiency = newEfficiency;
-}
-
-void save(pipe p, KS k) 
+void save(Pipe p, KS k) 
 {
 	ofstream fout;
 	fout.open("results.txt", ios::out);
@@ -135,8 +38,7 @@ void save(pipe p, KS k)
 	}
 }
 
-void load(pipe& p, KS& k) 
-{
+void load(Pipe& p, KS& k) {
 	ifstream fin;
 	fin.open("results.txt", ios::in);
 	if (fin.is_open()) {	//проверка факта открытия файла (+)
@@ -157,7 +59,7 @@ int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251); //https://nicknixer.ru/programmirovanie/russkie-simvolybukvy-pri-vvodevyvode-v-konsol-na-c/
 	int choise;
-	pipe p;
+	Pipe p;
 	KS k;
 	int maxid = 0;
 
@@ -198,29 +100,29 @@ int main() {
 		switch (choise)
 		{
 		case 1:
-			p = addpipe(maxid);
+			p = Pipe.addpipe(maxid);
 			maxid++;
 			break;
 		case 2:
-			outpipe(p);
+			Pipe.outpipe(p);
 			break;
 		case 3:
-			editPipe(p.repair);
+			Pipe.editPipe(p.repair);
 			break;
 		case 4:
-			k = addKS(1);
+			k = KS.addKS(1);
 			break;
 		case 5:
-			outKS(k);
+			KS.outKS(k);
 			break;
 		case 6:
-			editKS(k);
+			KS.editKS(k);
 			break;
 		case 7:
 			cout << "Труба:" << endl << endl;
-			outpipe(p);
+			Pipe.outpipe(p);
 			cout << endl << "Компрессорная станция:" << endl << endl;
-			outKS(k);
+			KS.outKS(k);
 			break;
 		case 8:
 			if (maxid != 0) {//проверка наличия трубы (+)
