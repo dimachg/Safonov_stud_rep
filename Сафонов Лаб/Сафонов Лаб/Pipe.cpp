@@ -3,15 +3,15 @@
 
 using namespace std;
 
-Pipe Pipe::addpipe(int maxid)
+
+void Pipe::addpipe(Pipe p, int maxid)
 {
-	Pipe p;
 	p.id = ++maxid;
 	wInput("длину", p.lenght);
 	wInput("диаметр", p.diameter);
 	p.repair = false;
-	return p;
 }
+
 
 void Pipe::outpipe(const Pipe& p)
 {

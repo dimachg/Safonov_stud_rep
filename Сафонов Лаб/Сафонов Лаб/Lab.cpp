@@ -59,9 +59,9 @@ int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251); //https://nicknixer.ru/programmirovanie/russkie-simvolybukvy-pri-vvodevyvode-v-konsol-na-c/
 	int choise;
+	int maxid = 0;
 	Pipe p;
 	KS k;
-	int maxid = 0;
 
 	while (true) {
 		cout << endl;
@@ -100,7 +100,8 @@ int main() {
 		switch (choise)
 		{
 		case 1:
-			p = Pipe.addpipe(maxid);
+			Pipe p;
+			Pipe.addpipe(p, maxid);
 			maxid++;
 			break;
 		case 2:
@@ -110,7 +111,8 @@ int main() {
 			Pipe.editPipe(p.repair);
 			break;
 		case 4:
-			k = KS.addKS(1);
+			KS k;
+			k = KS.addKS(k, maxid);
 			break;
 		case 5:
 			KS.outKS(k);

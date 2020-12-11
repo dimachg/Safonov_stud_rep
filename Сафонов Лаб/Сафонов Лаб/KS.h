@@ -15,7 +15,7 @@ public:
 	int activeShops;
 	float efficiency;
 
-	KS addKS(int maxid);
+	void addKS(KS k, int maxid);
 
 	void outKS(const KS& k);
 

@@ -4,10 +4,9 @@
 
 using namespace std;
 
-KS KS::addKS(int maxid)
+void KS::addKS(KS k, int maxid)
 {
-	KS k;
-	k.id = maxid;
+	k.id = ++maxid;
 	cout << "Пожалуйста, введите имя" << endl;
 	cin.ignore();
 	getline(cin, k.name);	//поддержка пробелов (+)
@@ -18,7 +17,6 @@ KS KS::addKS(int maxid)
 	do {
 		wInput("эффективность", k.efficiency);
 	} while (k.efficiency > 100);	//эффективность по вводу (+)
-	return(k);
 }
 
 void KS::outKS(const KS& k)

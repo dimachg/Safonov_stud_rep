@@ -13,7 +13,7 @@ public:
 	int diameter;
 	bool repair;
 
-	Pipe addpipe(int maxid);
+	void addpipe(Pipe p, int maxid);
 
 	void outpipe(const Pipe& p);
 
