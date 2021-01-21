@@ -3,277 +3,14 @@
 #include <string>
 #include <Windows.h>
 #include <vector>
-
+#include "Pipe.h"
+#include "KS.h"
+#include "Graph.h"
 
 using namespace std;
 
-struct pipe {
-	int id;
-	string name;
-	float lenght;
-	int diameter;
-	bool repair;
-};
-
-struct KS {
-	int id;
-	string name;
-	int amountShops;
-	int activeShops;
-	float efficiency;
-};
-
-void wInput(string inf, int& n) {
-	do {
-cin.clear();
-cin.ignore(10000, '\n');
-cout << "Пожалуйста, введите " << inf << endl;
-cin >> n;
-	} while (cin.fail());
-}
-
-void wInput(string inf, float& n) {
-	do {
-cin.clear();
-cin.ignore(10000, '\n');
-cout << "ожалуйста, введите " << inf << endl;
-cin >> n;
-	} while (cin.fail());
-}
-
-//void wInput(string inf, string& n) {
-//	do {
-//		cin.clear();
-//		cin.ignore(10000, '\n');
-//		cout << "Ïîæàëóéñòà, ââåäèòå " << inf << endl;
-//		getline(cin, n);
-//	} while (cin.fail());
-//}
-
-
-//Трубы
-void addpipe(vector <pipe>& pipelist, pipe p, int& maxid) {
-	p.id = maxid;
-	cout << "Пожалуйста, введите имя" << endl;
-	cin.ignore();
-	getline(cin, p.name);
-	wInput("длину", p.lenght);
-	wInput("диаметр", p.diameter);
-	p.repair = false;
-	pipelist.push_back(p);
-	maxid++;
-}
-
-void deletepipe(vector <pipe>& pipelist) {
-	int i;
-	wInput("номер удаляемого элемента", i);
-	pipelist[i].lenght = 0; //сделать нормльное удаление, а не вот это вот "сокрытие фактов"
-}
-
-void outpipe(vector <pipe> pipelist) {
-	int i = 0;
-	for (i = 0; i <= (pipelist.size() - 1); i++)
-	{
-		if (pipelist[i].lenght != 0 && pipelist[i].diameter != 0) {
-			cout << "id: " << pipelist[i].id << endl;
-			cout << "Имя: " << pipelist[i].name << endl;
-			cout << "Длина трубы: " << pipelist[i].lenght << endl;
-			cout << "Диаметр трубы: " << pipelist[i].diameter << endl;
-			if (pipelist[i].repair == false) {
-				cout << "Труба работает" << endl;
-			}
-			else {
-				cout << "Труба в ремонте" << endl;
-			}
-		}
-
-	}
-
-}
-
-void editPipe(vector <pipe>& pipelist) {
-	int i;
-	wInput("номер изменяемой трубы", i);
-	pipelist[i].repair = !pipelist[i].repair;
-}
-
-void findPipe(vector <pipe> pipelist, vector <pipe>& findedPipes) {
-	findedPipes.clear();
-	string name;
-	int repair;
-	cout << "Введите фильтр по имени или 0 для отсутствия фильтра" << endl;
-	cin.ignore();
-	getline(cin, name);
-	wInput("фильтр по статусу работы 1-вкл 0-в ремонте 2-отсутсвие фильтра", repair);
-	bool r = 1;
-	int sz = pipelist.size();
-	if (repair == 1) { r = 1; }
-	if (repair == 0) { r = 0; }
-	if (repair != 2) {
-		for (int i = 0; i < sz; i++) {
-			if (pipelist[i].repair == r) {
-				findedPipes.push_back(pipelist[i]);
-			}
-		}
-	}
-
-	if (name != "0") {
-		for (int i = 0; i < sz; i++) {
-			if (pipelist[i].name == name) {
-				findedPipes.push_back(pipelist[i]);
-			}
-		}
-	}
-
-	if (name == "0" && repair == 2) {
-		for (int i = 0; i < sz; i++) {
-			findedPipes.push_back(pipelist[i]);
-		}
-	}
-}
-
-void pipeid(vector <pipe> pipelist, vector <pipe> findedPipes) {
-	findedPipes.clear();
-	int n = 0;
-	int id = 0;
-	wInput("количество редактируемых труб", n);
-	for (int i = 0; i < n; i++) {
-		string stri = to_string(i+1);
-		wInput("id " + stri + " трубы", id);
-		findedPipes.push_back(pipelist[id]);
-	}
-}
-
-void pipePackEdit(vector <pipe>& pipelist, vector <pipe>& findedPipes) {
-	int sz = findedPipes.size();
-	int szall = pipelist.size();
-	for (int j = 0; j < sz; j++) {
-		findedPipes[j].repair = !findedPipes[j].repair;
-		for (int i = 0; i < szall; i++) {
-			if (findedPipes[j].id == pipelist[i].id) {
-				pipelist[i] = findedPipes[j];
-			}
-		}
-	}
-}
-
-//Компрессорные станции
-void addKS(vector <KS>& kslist, KS k, int& maxid2) {
-	k.id = maxid2;
-	cout << "Пожалуйста, введите имя" << endl;
-	cin.ignore();
-	getline(cin, k.name);	//поддержка пробелов (+)
-	wInput("количество цехов", k.amountShops);
-	do {
-		wInput("количество активных цехов", k.activeShops);
-	} while (k.amountShops < k.activeShops || k.activeShops < 0);	//проверка корректного ввода (+)
-	do {
-		wInput("эффективность", k.efficiency);
-	} while (k.efficiency > 100);	//эффективность по вводу (+)
-	kslist.push_back(k);
-	maxid2++;
-}
-
-void deleteKS(vector <KS>& kslist) {
-	int i = 0;
-	wInput("номер удаляемой компрессорной станции", i);
-	kslist[i].amountShops = 0; //сделать нормльное удаление, а не вот это вот "сокрытие фактов"
-}
-
-void outKS(vector <KS> kslist) {
-	for (int i = 0; i <= (kslist.size()-1); i++) {
-		if (kslist[i].amountShops != 0) {
-			cout << "id компрессорной станции: " << kslist[i].id << endl;
-			cout << "Имя компрессорной станции: " << kslist[i].name << endl;
-			cout << "Количество цехов компрессорной станции: " << kslist[i].amountShops << endl;
-			cout << "Количество активных цехов компрессорной станции: " << kslist[i].activeShops << endl;
-			cout << "эффективность компрессорной станции: " << kslist[i].efficiency << "%" << endl;
-		}
-	}
-	
-}
-
-void editKS(vector <KS>& kslist, int i) {
-	wInput("номер изменяемой компрессорной станции", i);
-	int shopChange;
-	int newEfficiency;
-	do {	
-		wInput("количество включаемых цехов (отрицательное значение - количество выключаемых цехов)", shopChange);
-	} while (((kslist[i].activeShops + shopChange) < 0) || ((kslist[i].activeShops + shopChange) > kslist[i].amountShops));
-	kslist[i].activeShops = kslist[i].activeShops + shopChange;
-	do {	
-		wInput("новую эффективность", newEfficiency);
-	} while ((newEfficiency < 0) || (newEfficiency > 100));
-	kslist[i].efficiency = newEfficiency;
-}
-
-void findKS(vector <KS> KSlist, vector <KS>& findedKS) {
-	findedKS.clear();
-	string name;
-	float inactive = 101;
-	cout << "Введите фильтр по имени или 0 для отсутствия фильтра" << endl;
-	cin.ignore();
-	getline(cin, name);
-	wInput("фильтр по проценту незадействованных цехов или 101 для отсутсвия фильтра", inactive);
-	int sz = KSlist.size();
-	if (inactive != 101) {
-		for (int i = 0; i < sz; i++) {
-			if ((KSlist[i].amountShops-KSlist[i].activeShops)/KSlist[i].amountShops == inactive) {
-				findedKS.push_back(KSlist[i]);
-			}
-		}
-	}
-
-	if (name != "0") {
-		for (int i = 0; i < sz; i++) {
-			if (KSlist[i].name == name) {
-				findedKS.push_back(KSlist[i]);
-			}
-		}
-	}
-
-	if (name == "0" && inactive == 101) {
-		for (int i = 0; i < sz; i++) {
-			findedKS.push_back(KSlist[i]);
-		}
-	}
-}
-
-void KSid(vector <KS> KSlist, vector <KS> findedKS) {
-	findedKS.clear();
-	int n = 0;
-	int id = 0;
-	wInput("количество редактируемых КС", n);
-	for (int i = 0; i < n; i++) {
-		string stri = to_string(i + 1);
-		wInput("id " + stri + " КС", id);
-		findedKS.push_back(KSlist[id]);
-	}
-}
-
-void KSPackEdit(vector <KS>& KSlist, vector <KS>& findedKS) {
-	//остановился тут, сделать редактирование кс
-	int sz = findedKS.size();
-	int shopChange;
-	int newEfficiency;
-	bool check = 1;
-
-	do {
-		wInput("количество включаемых цехов (отрицательное значение - количество выключаемых цехов)", shopChange);
-		wInput("новую эффективность", newEfficiency);
-		check = 1;
-		for (int i = 1; i < sz; i++) {
-			if (((findedKS[i].activeShops + shopChange) < 0) || ((findedKS[i].activeShops + shopChange) > findedKS[i].amountShops) || newEfficiency < 0 || newEfficiency > 100) {
-				check = 0;
-			}
-			findedKS[i].activeShops = findedKS[i].activeShops + shopChange;
-			findedKS[i].efficiency = newEfficiency;
-		}
-	} while (check = 0);
-}
-
 //работа с файлами
-void save(vector <pipe> pipelist, vector <KS> KSlist)
+void save(vector <Pipe> pipelist, vector <KS> KSlist)
 {
 	ofstream fout;
 	fout.open("Pipes.txt", ios::out);
@@ -303,59 +40,22 @@ void save(vector <pipe> pipelist, vector <KS> KSlist)
 	fout.close();
 }
 
-void loadpipe(vector <pipe>& pipelist)
-{
-	ifstream fin;
-	fin.open("Pipes.txt", ios::in);
-	if (fin.is_open()) {
-		int sz1;
-		fin >> sz1;
-		for (int i = 0; i < sz1; i++) {
-			pipe p;
-			pipelist.push_back(p);
-			fin >> pipelist[i].id;
-			fin >> pipelist[i].name;
-			fin >> pipelist[i].lenght;
-			fin >> pipelist[i].diameter;
-			fin >> pipelist[i].repair;
-		}
-	}
-	fin.close();
-}
-
-void loadKS(vector <KS>& KSlist)
-{
-	ifstream fin;
-	fin.open("KS.txt", ios::in);
-	if (fin.is_open()) {
-		int sz2;
-		fin >> sz2;
-		for (int i = 0; i < sz2; i++) {
-			KS k;
-			KSlist.push_back(k);
-			fin >> KSlist[i].id;
-			fin >> KSlist[i].name;
-			fin >> KSlist[i].amountShops;
-			fin >> KSlist[i].activeShops;
-			fin >> KSlist[i].efficiency;
-		}
-	}
-	fin.close();
-}
-
 int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251); //https://nicknixer.ru/programmirovanie/russkie-simvolybukvy-pri-vvodevyvode-v-konsol-na-c/
 	int choise;
-	pipe p;
+	Pipe p;
 	KS k;
-	vector <pipe> pipelist;
+	vector <Pipe> pipelist;
 	vector <KS> KSlist;
 	int maxid = 0;
 	int maxid2 = 0;
 	int i = 0;
-	vector <pipe> findedPipes;
+	vector <Pipe> findedPipes;
 	vector <KS> findedKS;
+	Graph gasNetwork;
+	unordered_map <int, KS> mapKS;
+	unordered_map <int, Pipe> mapPipe;
 
 	p.id = 0; //idle initialize
 	p.lenght = 0;
@@ -384,6 +84,7 @@ int main() {
 		cout << "13 - Выбор КС для пакетного редактирования по id" << endl;
 		cout << "14 - Пакетное редактирование труб" << endl;
 		cout << "15 - Пакетное редактирование КС" << endl;
+		cout << "16 - Go to gas network menu" << endl;
 		cout << "0 - Выход" << endl;
 
 		cout << "Выберите действие:" << endl;
@@ -407,28 +108,28 @@ int main() {
 			switch (choise)
 			{
 			case 1: 
-				addpipe(pipelist, p, maxid);
+				p.addpipe(pipelist, p, maxid);
 				break;
 			case 2: 
-				deletepipe(pipelist);
+				p.deletepipe(pipelist);
 				break;
 			case 3:
-				editPipe(pipelist);
+				p.editPipe(pipelist);
 				break;
 			case 4:
-				addKS(KSlist, k, maxid2);
+				k.addKS(KSlist, k, maxid2);
 				break;
 			case 5:
-				editKS(KSlist, i);
+				k.editKS(KSlist, i);
 				break;
 			case 6:
-				deleteKS(KSlist);
+				k.deleteKS(KSlist);
 				break;
 			case 7:
 				cout << "Трубы: " << endl << endl;
-				outpipe(pipelist);
+				p.outpipe(pipelist);
 				cout << endl << "Компрессорная станция:" << endl << endl;
-				outKS(KSlist);
+				k.outKS(KSlist);
 				break;
 			case 8:
 				if (maxid != 0 || maxid2 != 0) {
@@ -437,33 +138,188 @@ int main() {
 				else { cout << "Нет данных для сохранения" << endl; }
 				break;
 			case 9:
-				loadpipe(pipelist);
-				loadKS(KSlist);
+				p.loadpipe(pipelist);
+				k.loadKS(KSlist);
 				break;
 			case 10:
-				//filter-based searching done
-				findPipe(pipelist, findedPipes);
+				p.findPipe(pipelist, findedPipes);
 				if (findedPipes.size() != 0) {
-					outpipe(findedPipes);
+					p.outpipe(findedPipes);
 				}
 				break;
 			case 11:
-				findKS(KSlist, findedKS);
+				k.findKS(KSlist, findedKS);
 				if (findedKS.size() != 0) {
-					outKS(findedKS);
+					k.outKS(findedKS);
 				}
 				break;
 			case 12:
-				pipeid(pipelist, findedPipes);
+				p.pipeid(pipelist, findedPipes);
 				break;
 			case 13:
-				KSid(KSlist, findedKS);
+				k.KSid(KSlist, findedKS);
 				break;
 			case 14:
-				pipePackEdit(pipelist, findedPipes);
+				p.pipePackEdit(pipelist, findedPipes);
 				break;
 			case 15:
-				KSPackEdit(KSlist, findedKS);
+				k.KSPackEdit(KSlist, findedKS);
+			case 16:
+			{
+				if (mapKS.size() >= 2 && !mapPipe.empty())
+				{
+					bool editingNet = true;
+					while (editingNet)
+					{
+						cout << "1 - connect compressor stations with pipe\n"
+							<< "2 - do topological sorting\n"
+							<< "3 - show current network\n"
+							<< "4 - save network to file\n"
+							<< "5 - load network from file\n"
+							<< "6 - delete compressor stacion from network\n"
+							<< "7 - delete pipe from network\n"
+							<< "8 - change pipe\n"
+							<< "9 - find maximum flow\n"
+							<< "10 - find minimal path\n"
+							<< "0 - exit from this menu to main menu\n";
+						switch (tryInput("Please, chose an action: ", 0))
+						{
+						case 1:
+						{
+							for (auto& p : mapKS)
+							{
+								cout << p.first << endl;
+							}
+							cout << "^ all avaliable id of compressor stations" << endl;
+							int IdF = tryInput("Please, enter id of first avaliable compressor station (or [0] to leave): ", mapKS);
+							int IdS = tryInput("Please, enter id of second avaliable compressor station (or [0] to leave): ", mapKS);
+							if (IdF != 0 && IdS != 0)
+							{
+								for (auto& p : mapPipe)
+								{
+									if (!p.second.repair && !gasNetwork.HasEdge(p.first))
+									{
+										cout << p.first << endl;
+									}
+								}
+								cout << "^ all available id of pipes" << endl;
+								int IdE = tryInput("Please, enter id of avaliable pipe (or [0] to leave): ", mapPipe);
+								if (IdE != 0)
+								{
+									auto iter = mapPipe.find(IdE);
+									if (!iter->second.repair && !gasNetwork.HasEdge(iter->first))
+									{
+										bool IsStraight = tryInput<bool>("If this pipe comes from first to second? ([0] - revers, [1] - yes): ", 0, 1);
+										gasNetwork.ConnectDirected(IdF, IdS, IdE, iter->second.getPressureDropValue(), iter->second.getPerformance(), IsStraight);
+									}
+									else
+									{
+										cout << "this pipe send for repair, choose another one" << endl;
+									}
+								}
+								else
+								{
+									cout << "Pipe does not exist ";
+								}
+							}
+							break;
+						}
+						case 2:
+						{
+							cout << "topological sorting" << endl;
+							auto sort = gasNetwork.TopologicalSorting();
+							for (unsigned int i = 0; i < sort.size(); i++)
+							{
+								cout << i + 1 << "      " << sort[i] << endl;
+							}
+							if (!sort.empty())
+							{
+								if (tryInput<bool>("Would you like to see compressor stations? ([1] - yes, [0] - no): ", 0, 1))
+								{
+									for (int i : sort)
+									{
+										cout << mapKS[i];
+									}
+								}
+							}
+							else
+							{
+								std::cout << "has cycle" << std::endl;
+							}
+							break;
+						}
+						case 3:
+						{
+							cout << gasNetwork;
+							break;
+						}
+						case 4:
+						{
+							string filename = "";
+							cout << "Please, enter file name: ";
+							cin >> filename;
+							ofstream fout;
+							fout.open(filename + ".txt", ios::out);
+							if (fout.is_open())
+							{
+								fout << gasNetwork;
+							}
+							fout.close();
+							break;
+						}
+						case 5:
+						{
+							string filename = "";
+							cout << "Please, enter file name: ";
+							cin >> filename;
+							ifstream fin;
+							fin.open(filename + ".txt", ios::in);
+							if (fin.is_open())
+							{
+								fin >> gasNetwork;
+							}
+							fin.close();
+							break;
+						}
+						case 6:
+						{
+							gasNetwork.DeleteVertex(tryInput("Please, enter id of compressor station you want to delete: ", mapKS));
+							break;
+						}
+						case 7:
+						{
+							gasNetwork.DeleteEdge(tryInput("Please, enter id of pipe you want to delete: ", mapPipe));
+							break;
+						}
+						case 8:
+						{
+							int IdO = tryInput("Please, enter id of pipe you want to replace: ", mapPipe);
+							if (IdO != 0)
+							{
+								int IdN = tryInput("Please, enter id of pipe with which you would like to replace old one: ", mapPipe);
+								if (!mapPipe[IdN].repair)
+								{
+									bool IsStraght = tryInput<bool>("If this pipe comes from first to second? ([0] - revers, [1] - yes): ", 0, 1);
+									gasNetwork.ReplaceEdge(IdO, IdN, mapPipe[IdN].getPressureDropValue(), IsStraght);
+								}
+							}
+							break;
+						}
+						case 0:
+							editingNet = false;
+							break;
+						default:
+							cout << "This action is unacceptable " << endl;
+							break;
+						}
+					}
+				}
+				else
+				{
+					cout << "At first add pipe and compressor station " << endl;
+				}
+			}
+			break;
 			case 0:
 				return 0;
 				break;

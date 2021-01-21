@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{106ba78c-d7e8-419a-85d5-b17ace2ad80b}</ProjectGuid>
-    <RootNamespace>Lab2</RootNamespace>
+    <ProjectGuid>{5689d287-7170-494f-8bcc-c03f5e2d0c7c}</ProjectGuid>
+    <RootNamespace>timsort</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -139,16 +139,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Graph.cpp" />
-    <ClCompile Include="KS.cpp" />
-    <ClCompile Include="Lab2.cpp" />
-    <ClCompile Include="Pipe.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Graph.h" />
-    <ClInclude Include="KS.h" />
-    <ClInclude Include="Pipe.h" />
-    <ClInclude Include="utils.h" />
+    <ClCompile Include="timsort.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
