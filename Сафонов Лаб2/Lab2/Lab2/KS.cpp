@@ -144,3 +144,41 @@ void KS::loadKS(vector<KS>& KSlist)
 	}
 	fin.close();
 }
+
+std::ostream& operator << (std::ostream& out, const KS& CS)
+{
+	out << "It is the compressor station's data" << std::endl;
+	out << "id: " << CS.id << std::endl;
+	out << "name: " << CS.name << std::endl;
+	out << "Shops (total): " << CS.amountShops << std::endl;
+	out << "Shops (online): " << CS.activeShops << std::endl;
+	out << "Efficieny: " << CS.efficiency << std::endl;
+	out << std::endl;
+	return out;
+}
+
+std::ofstream& operator << (std::ofstream& fout, const KS& CS)
+{
+	fout << std::endl << CS.id << std::endl << CS.name << std::endl << CS.amountShops
+		<< std::endl << CS.activeShops << std::endl << CS.efficiency << std::endl;
+	return fout;
+}
+
+std::ifstream& operator >> (std::ifstream& fin, KS& CS)
+{
+	fin >> CS.id;
+	fin >> CS.name;
+	fin >> CS.amountShops;
+	fin >> CS.activeShops;
+	fin >> CS.efficiency;
+	return fin;
+}
+
+std::istream& operator>>(std::istream& in, KS& CS)
+{
+	in >> CS.name;
+	CS.amountShops = tryInput("Please, enter count of shops: ", 1);
+	CS.activeShops = tryInput("Please, enter count of online shops: ", 1);
+	CS.efficiency = tryInput("Please, enter efficiency: ", 1);
+	return in;
+}

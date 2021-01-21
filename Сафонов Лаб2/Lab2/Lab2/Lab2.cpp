@@ -40,6 +40,31 @@ void save(vector <Pipe> pipelist, vector <KS> KSlist)
 	fout.close();
 }
 
+void menu() {
+	cout << endl;
+	cout << "Трубно-компрессорно-станционный интерфейс" << endl;
+	cout << "Выберите действие:" << endl;
+	cout << "1 - Добавить новую трубу" << endl;
+	cout << "2 - Удалить трубу" << endl;
+	cout << "3 - Изменить статус трубы" << endl;
+	cout << "4 - Добавить новую компрессорную станцию" << endl;
+	cout << "5 - Изменение информации о компрессорной станции" << endl;
+	cout << "6 - Удалить компрессорную станцию" << endl;
+	cout << "7 - Вывод всех элементов" << endl;
+	cout << "8 - Сохранить данные в текстовые документы" << endl;
+	cout << "9 - Загрузить данные из текстовых документов" << endl;
+	cout << "10 - Поиск труб по фильтру" << endl;
+	cout << "11 - Поиск компрессорных станций по фильтру" << endl;
+	cout << "12 - Выбор труб для пакетного редактирования по id" << endl;
+	cout << "13 - Выбор КС для пакетного редактирования по id" << endl;
+	cout << "14 - Пакетное редактирование труб" << endl;
+	cout << "15 - Пакетное редактирование КС" << endl;
+	cout << "16 - Режим графа" << endl;
+	cout << "0 - Выход" << endl;
+
+	cout << "Выберите действие:" << endl;
+}
+
 int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251); //https://nicknixer.ru/programmirovanie/russkie-simvolybukvy-pri-vvodevyvode-v-konsol-na-c/
@@ -66,28 +91,7 @@ int main() {
 	k.activeShops = 0;
 
 	while (true) {
-		cout << endl;
-		cout << "Трубно-компрессорно-станционный интерфейс" << endl;
-		cout << "Выберите действие:" << endl;
-		cout << "1 - Добавить новую трубу" << endl;
-		cout << "2 - Удалить трубу" << endl;
-		cout << "3 - Изменить статус трубы" << endl;
-		cout << "4 - Добавить новую компрессорную станцию" << endl;
-		cout << "5 - Изменение информации о компрессорной станции" << endl;
-		cout << "6 - Удалить компрессорную станцию" << endl;
-		cout << "7 - Вывод всех элементов" << endl;
-		cout << "8 - Сохранить данные в текстовые документы" << endl;
-		cout << "9 - Загрузить данные из текстовых документов" << endl;
-		cout << "10 - Поиск труб по фильтру" << endl;
-		cout << "11 - Поиск компрессорных станций по фильтру" << endl;
-		cout << "12 - Выбор труб для пакетного редактирования по id" << endl;
-		cout << "13 - Выбор КС для пакетного редактирования по id" << endl;
-		cout << "14 - Пакетное редактирование труб" << endl;
-		cout << "15 - Пакетное редактирование КС" << endl;
-		cout << "16 - Go to gas network menu" << endl;
-		cout << "0 - Выход" << endl;
-
-		cout << "Выберите действие:" << endl;
+		menu();
 		cin >> choise;
 
 		while (cin.fail()) {
@@ -104,7 +108,7 @@ int main() {
 			}
 		}
 		*/
-		if (choise >=0 && choise <=15) {
+		if (choise >=0 && choise <=16) {
 			switch (choise)
 			{
 			case 1: 
@@ -166,7 +170,7 @@ int main() {
 				k.KSPackEdit(KSlist, findedKS);
 			case 16:
 			{
-				if (mapKS.size() >= 2 && !mapPipe.empty())
+				if (mapKS.size() >= 0 || !mapPipe.empty())
 				{
 					bool editingNet = true;
 					while (editingNet)

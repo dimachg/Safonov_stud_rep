@@ -146,3 +146,44 @@ double Pipe::getPerformance() const
 {
 	return diameter * 1.0 / lenght;
 }
+
+std::ostream& operator << (std::ostream& out, const Pipe& pipe)
+{
+	out << "It is the pipe's data" << std::endl;
+	out << "id: " << pipe.id << std::endl;
+	out << "diametr: " << pipe.diameter << std::endl;
+	out << "length: " << pipe.lenght << std::endl;
+	if (pipe.repair)
+	{
+		out << "The pipe needs repair" << std::endl;
+	}
+	else
+	{
+		out << "The pipe doesn't need repair" << std::endl;
+	}
+	out << std::endl;
+	return out;
+}
+
+std::ifstream& operator >> (std::ifstream& fin, Pipe& pipe)
+{
+	fin >> pipe.id;
+	fin >> pipe.diameter;
+	fin >> pipe.lenght;
+	fin >> pipe.repair;
+	return fin;
+}
+
+std::ofstream& operator << (std::ofstream& fout, const Pipe& pipe)
+{
+	fout << std::endl << pipe.id << std::endl << pipe.diameter << std::endl << pipe.lenght << std::endl << pipe.repair << std::endl;
+	return fout;
+}
+
+std::istream& operator>>(std::istream& in, Pipe& pipe)
+{
+	pipe.lenght = tryInput("Please, enter length: ", 1.0);
+	pipe.diameter = tryInput("Please, enter diameter: ", 1);
+	pipe.repair = false;
+	return in;
+}

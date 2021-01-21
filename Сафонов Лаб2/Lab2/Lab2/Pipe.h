@@ -14,6 +14,11 @@ public:
 	double getPressureDropValue() const;
 	double getPerformance() const;
 
+	friend std::ostream& operator << (std::ostream& out, const Pipe& pipe);
+	friend std::ifstream& operator >> (std::ifstream& fin, Pipe& pipe);
+	friend std::ofstream& operator << (std::ofstream& fout, const Pipe& pipe);
+	friend std::istream& operator >> (std::istream& in, Pipe& pipe);
+
 	void addpipe(vector <Pipe>& pipelist, Pipe p, int& maxid);
 	void deletepipe(vector <Pipe>& pipelist);
 	void outpipe(vector <Pipe> pipelist);
